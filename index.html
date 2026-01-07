@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>升學與職涯趨勢導航系統</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>升學與職涯趨勢導航系統</h1>
+            <p class="subtitle">智能化職涯規劃，掌握未來趨勢</p>
+        </header>
+
+        <!-- Step 1: 類組選擇 -->
+        <section id="step-category" class="step-section active">
+            <h2>選擇類組</h2>
+            <div class="category-grid">
+                <div class="category-card" onclick="selectCategory('first')">
+                    <div class="category-icon">📚</div>
+                    <h3>一類組</h3>
+                    <p>文法商科系</p>
+                </div>
+                <div class="category-card" onclick="selectCategory('second')">
+                    <div class="category-icon">🔬</div>
+                    <h3>二類組</h3>
+                    <p>理工科系</p>
+                </div>
+                <div class="category-card" onclick="selectCategory('third')">
+                    <div class="category-icon">🏥</div>
+                    <h3>三類組</h3>
+                    <p>醫藥生科系</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 1.5: 一類組細分 -->
+        <section id="step-first-subcategory" class="step-section">
+            <h2>一類組細分</h2>
+            <div class="back-btn" onclick="goBack('step-category')">← 返回</div>
+            <div class="category-grid">
+                <div class="category-card" onclick="selectSubCategory('humanities')">
+                    <div class="category-icon">📖</div>
+                    <h3>文學類</h3>
+                    <p class="math-requirement">數學 A/B 皆可</p>
+                </div>
+                <div class="category-card" onclick="selectSubCategory('law')">
+                    <div class="category-icon">⚖️</div>
+                    <h3>法律類</h3>
+                    <p class="math-requirement">建議數學 A</p>
+                </div>
+                <div class="category-card" onclick="selectSubCategory('business')">
+                    <div class="category-icon">💼</div>
+                    <h3>商學類</h3>
+                    <p class="math-requirement">建議數學 A</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: 科系頁面 -->
+        <section id="step-departments" class="step-section">
+            <h2 id="department-title">適合科系</h2>
+            <div class="back-btn" onclick="goBackToPrevious()">← 返回</div>
+            
+            <div id="departments-list" class="departments-grid"></div>
+
+            <!-- 跨域彈性專區 -->
+            <div class="cross-domain-section">
+                <h3>🔄 跨域彈性專區</h3>
+                <p>這些科系具有跨領域特性，未來職涯發展更具彈性</p>
+                <div id="cross-domain-list" class="cross-domain-grid"></div>
+            </div>
+        </section>
+
+        <!-- Step 3: 功能選擇 -->
+        <section id="step-function-select" class="step-section">
+            <h2 id="selected-department-name"></h2>
+            <div class="back-btn" onclick="goBack('step-departments')">← 返回</div>
+            
+            <div class="function-select-grid">
+                <div class="function-card" onclick="showCareerAnalysis()">
+                    <div class="function-icon">💼</div>
+                    <h3>未來職業</h3>
+                    <p>探索職業發展路徑與薪資趨勢</p>
+                </div>
+                <div class="function-card" onclick="showAbilityAnalysis()">
+                    <div class="function-icon">🎓</div>
+                    <h3>基本能力</h3>
+                    <p>了解所需核心能力與學習路徑</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 4A: 未來職業分析 -->
+        <section id="step-career-analysis" class="step-section">
+            <h2>未來職業分析</h2>
+            <div class="back-btn" onclick="goBack('step-function-select')">← 返回</div>
+            
+            <!-- 薪資分析儀 -->
+            <div class="analysis-card">
+                <h3>💰 薪資分析儀</h3>
+                
+                <!-- 篩選條件 -->
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label>區域：</label>
+                        <select id="region-filter" onchange="updateSalaryChart()">
+                            <option value="north">北部</option>
+                            <option value="central">中部</option>
+                            <option value="south">南部</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>學歷：</label>
+                        <select id="education-filter" onchange="updateSalaryChart()">
+                            <option value="bachelor">學士</option>
+                            <option value="master">碩士</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>企業規模：</label>
+                        <select id="company-filter" onchange="updateSalaryChart()">
+                            <option value="startup">新創</option>
+                            <option value="large">大企業</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 薪資曲線圖 -->
+                <div class="chart-container" id="salaryChartContainer">
+                    <canvas id="salaryChart"></canvas>
+                </div>
+                <p class="warning-text">⚠️ 薪資預測僅供參考，實際薪資受多種因素影響</p>
+            </div>
+
+            <!-- 量化指標 -->
+            <div class="analysis-card">
+                <h3>📊 量化指標</h3>
+                <div class="indicators-grid">
+                    <div class="indicator-item">
+                        <div class="indicator-label">壓力指數</div>
+                        <div class="indicator-bar">
+                            <div class="indicator-fill stress" id="stress-indicator"></div>
+                        </div>
+                        <div class="indicator-value" id="stress-value"></div>
+                    </div>
+                    <div class="indicator-item">
+                        <div class="indicator-label">平均工時</div>
+                        <div class="indicator-bar">
+                            <div class="indicator-fill workhours" id="workhours-indicator"></div>
+                        </div>
+                        <div class="indicator-value" id="workhours-value"></div>
+                    </div>
+                    <div class="indicator-item">
+                        <div class="indicator-label">社會貢獻度</div>
+                        <div class="indicator-bar">
+                            <div class="indicator-fill contribution" id="contribution-indicator"></div>
+                        </div>
+                        <div class="indicator-value" id="contribution-value"></div>
+                    </div>
+                    <div class="indicator-item">
+                        <div class="indicator-label">AI 取代風險</div>
+                        <div class="indicator-bar">
+                            <div class="indicator-fill ai-risk" id="ai-risk-indicator"></div>
+                        </div>
+                        <div class="indicator-value" id="ai-risk-value"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 未來趨勢地圖 -->
+            <div class="analysis-card">
+                <h3>🗺️ 未來趨勢地圖</h3>
+                
+                <div class="trends-section">
+                    <h4>技能 vs 職稱分析</h4>
+                    <p class="section-description">拆解職位核心技能，強調可轉移技能的重要性</p>
+                    <div id="skills-breakdown" class="skills-grid"></div>
+                </div>
+
+                <div class="trends-section">
+                    <h4>AI 抗風險指數</h4>
+                    <div class="ai-risk-categories">
+                        <div class="risk-category high">
+                            <div class="risk-header">
+                                <span class="risk-icon">🛡️</span>
+                                <span class="risk-label">高抗風險</span>
+                            </div>
+                            <p>需要創意、情商、複雜決策能力</p>
+                            <div class="risk-examples" id="high-risk-jobs"></div>
+                        </div>
+                        <div class="risk-category medium">
+                            <div class="risk-header">
+                                <span class="risk-icon">🤝</span>
+                                <span class="risk-label">中抗風險</span>
+                            </div>
+                            <p>人機協作為主</p>
+                            <div class="risk-examples" id="medium-risk-jobs"></div>
+                        </div>
+                        <div class="risk-category low">
+                            <div class="risk-header">
+                                <span class="risk-icon">⚠️</span>
+                                <span class="risk-label">低抗風險</span>
+                            </div>
+                            <p>重複性數據、文書處理</p>
+                            <div class="risk-examples" id="low-risk-jobs"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 4B: 基本能力分析 -->
+        <section id="step-ability-analysis" class="step-section">
+            <h2>基本能力分析</h2>
+            <div class="back-btn" onclick="goBack('step-function-select')">← 返回</div>
+            
+            <!-- 學習路徑圖 -->
+            <div class="analysis-card">
+                <h3>🎯 學習路徑圖</h3>
+                <p class="section-description">高中銜接建議，為未來做好準備</p>
+                <div id="learning-path" class="learning-path-grid"></div>
+            </div>
+
+            <!-- 數A vs 數B 影響分析 -->
+            <div class="analysis-card">
+                <h3>📐 數 A vs 數 B 影響分析</h3>
+                <div class="math-comparison">
+                    <div class="math-option">
+                        <h4>選擇數學 A</h4>
+                        <div id="math-a-impact"></div>
+                    </div>
+                    <div class="math-option">
+                        <h4>選擇數學 B</h4>
+                        <div id="math-b-impact"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 核心能力需求 -->
+            <div class="analysis-card">
+                <h3>🎓 核心能力需求</h3>
+                <div id="core-abilities" class="abilities-grid"></div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
