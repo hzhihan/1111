@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>升學與職涯趨勢導航系統</title>
+    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .tech-border {
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #667eea, #764ba2) border-box;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .risk-high {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .risk-medium {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .risk-low {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-center">升學與職涯趨勢導航系統</h1>
+            <p class="text-center mt-2 text-gray-100">Educational and Career Trend Navigation System</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Step 1: Academic Track Selection -->
+        <div id="step-track-selection" class="step-container">
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">選擇學群類組</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="tech-border rounded-lg p-6 card-hover cursor-pointer" onclick="selectTrack(1)">
+                        <div class="text-center">
+                            <div class="text-5xl mb-4">📚</div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">第一類組</h3>
+                            <p class="text-gray-600">文、法、商學群</p>
+                            <p class="text-sm text-purple-600 mt-2">需選擇數學A或B</p>
+                        </div>
+                    </div>
+                    <div class="tech-border rounded-lg p-6 card-hover cursor-pointer" onclick="selectTrack(2)">
+                        <div class="text-center">
+                            <div class="text-5xl mb-4">🔬</div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">第二類組</h3>
+                            <p class="text-gray-600">理、工學群</p>
+                        </div>
+                    </div>
+                    <div class="tech-border rounded-lg p-6 card-hover cursor-pointer" onclick="selectTrack(3)">
+                        <div class="text-center">
+                            <div class="text-5xl mb-4">🏥</div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">第三類組</h3>
+                            <p class="text-gray-600">醫、農、生命科學</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Type 1 Subdivision (Humanities/Law/Business + Math A/B) -->
+        <div id="step-type1-subdivision" class="step-container hidden">
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <button onclick="goBack('step-track-selection')" class="mb-4 text-purple-600 hover:text-purple-800">
+                    ← 返回選擇類組
+                </button>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">第一類組細分與數學選擇</h2>
+                
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-700">選擇學群方向</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="tech-border rounded-lg p-6 card-hover cursor-pointer" onclick="selectSubField('humanities')">
+                            <div class="text-center">
+                                <div class="text-4xl mb-3">📖</div>
+                                <h4 class="text-lg font-bold text-gray-800">人文學群</h4>
+                                <p class="text-sm text-gray-600 mt-2">語文、歷史、哲學等</p>
+                            </div>
+                        </div>
+                        <div class="tech-border rounded-lg p-6 card-hover cursor-pointer" onclick="selectSubField('law')">
+                            <div class="text-center">
+                                <div class="text-4xl mb-3">⚖️</div>
+                                <h4 class="text-lg font-bold text-gray-800">法政學群</h4>
+                                <p class="text-sm text-gray-600 mt-2">法律、政治、外交等</p>
+                            </div>
+                        </div>
+                        <div class="tech-border rounded-lg p-6 card-hover cursor-pointer" onclick="selectSubField('business')">
+                            <div class="text-center">
+                                <div class="text-4xl mb-3">💼</div>
+                                <h4 class="text-lg font-bold text-gray-800">商管學群</h4>
+                                <p class="text-sm text-gray-600 mt-2">管理、會計、經濟等</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">數學選擇 (Math A vs Math B)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg p-4 border-2 border-purple-300 cursor-pointer card-hover" onclick="selectMath('A')">
+                            <h4 class="text-lg font-bold text-purple-700 mb-2">數學 A</h4>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li>✓ 較深入的數學內容</li>
+                                <li>✓ 適合商管、經濟、部分社會科學</li>
+                                <li>✓ 包含向量、矩陣、微積分</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 border-2 border-purple-300 cursor-pointer card-hover" onclick="selectMath('B')">
+                            <h4 class="text-lg font-bold text-purple-700 mb-2">數學 B</h4>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li>✓ 基礎數學內容</li>
+                                <li>✓ 適合人文、法律、教育</li>
+                                <li>✓ 著重實用與統計概念</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Department/Major Selection -->
+        <div id="step-department-selection" class="step-container hidden">
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <button onclick="goBackToPrevious()" class="mb-4 text-purple-600 hover:text-purple-800">
+                    ← 返回上一步
+                </button>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">適合科系推薦</h2>
+                
+                <div id="departments-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Departments will be populated by JavaScript -->
+                </div>
+
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6 mt-8">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">🔄 跨域彈性專區</h3>
+                    <p class="text-gray-700 mb-4">現代職場重視跨領域能力，以下是推薦的跨域學習方向：</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-bold text-purple-700 mb-2">💻 數位科技</h4>
+                            <p class="text-sm text-gray-600">程式設計、資料分析、數位行銷</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-bold text-purple-700 mb-2">🌍 國際視野</h4>
+                            <p class="text-sm text-gray-600">外語能力、跨文化溝通</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-bold text-purple-700 mb-2">🎨 創意設計</h4>
+                            <p class="text-sm text-gray-600">設計思考、使用者體驗</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-bold text-purple-700 mb-2">📊 商業分析</h4>
+                            <p class="text-sm text-gray-600">數據思維、商業模式創新</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Function Selection (Future Career vs Basic Skills) -->
+        <div id="step-function-selection" class="step-container hidden">
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <button onclick="goBack('step-department-selection')" class="mb-4 text-purple-600 hover:text-purple-800">
+                    ← 返回科系選擇
+                </button>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">探索方向選擇</h2>
+                <p class="text-gray-600 mb-6">已選擇：<span id="selected-department" class="font-bold text-purple-600"></span></p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="tech-border rounded-lg p-8 card-hover cursor-pointer" onclick="selectFunction('career')">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🎯</div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">未來職業探索</h3>
+                            <p class="text-gray-600">查看薪資預測、職業趨勢、AI影響分析</p>
+                        </div>
+                    </div>
+                    <div class="tech-border rounded-lg p-8 card-hover cursor-pointer" onclick="selectFunction('skills')">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">📚</div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3">基本能力準備</h3>
+                            <p class="text-gray-600">高中銜接建議、學習路徑、證照課程</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Career Exploration Module -->
+        <div id="module-career" class="module-container hidden">
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <button onclick="goBack('step-function-selection')" class="mb-4 text-purple-600 hover:text-purple-800">
+                    ← 返回功能選擇
+                </button>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">職業與薪資分析</h2>
+                
+                <!-- Salary Analyzer -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">💰 薪資分析儀</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">地區</label>
+                            <select id="region-select" onchange="updateSalaryChart()" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="north">北部</option>
+                                <option value="central">中部</option>
+                                <option value="south">南部</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">學歷</label>
+                            <select id="education-select" onchange="updateSalaryChart()" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="bachelor">學士</option>
+                                <option value="master">碩士</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">公司規模</label>
+                            <select id="company-select" onchange="updateSalaryChart()" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="startup">新創企業</option>
+                                <option value="large">大型企業</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-6 mb-4">
+                        <canvas id="salaryChart" style="max-height: 400px;"></canvas>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <p class="text-sm text-yellow-800">
+                            ⚠️ <strong>警語：</strong>此薪資預測基於歷史數據與產業趨勢，實際薪資受個人能力、經驗與市場變化影響。僅供參考。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Quantitative Indicators -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">📊 量化指標</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6">
+                            <div class="text-3xl mb-2">😰</div>
+                            <h4 class="font-bold text-gray-800 mb-2">壓力指數</h4>
+                            <div class="text-3xl font-bold text-red-600" id="stress-index">7.5</div>
+                            <div class="text-xs text-gray-600 mt-1">/ 10</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
+                            <div class="text-3xl mb-2">⏰</div>
+                            <h4 class="font-bold text-gray-800 mb-2">平均工時</h4>
+                            <div class="text-3xl font-bold text-blue-600" id="work-hours">48</div>
+                            <div class="text-xs text-gray-600 mt-1">小時/週</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6">
+                            <div class="text-3xl mb-2">🌟</div>
+                            <h4 class="font-bold text-gray-800 mb-2">社會貢獻</h4>
+                            <div class="text-3xl font-bold text-green-600" id="social-contribution">8.2</div>
+                            <div class="text-xs text-gray-600 mt-1">/ 10</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
+                            <div class="text-3xl mb-2">🤖</div>
+                            <h4 class="font-bold text-gray-800 mb-2">AI取代風險</h4>
+                            <div class="text-3xl font-bold text-purple-600" id="ai-risk">35</div>
+                            <div class="text-xs text-gray-600 mt-1">%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Future Trend Map -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">🗺️ 未來趨勢地圖</h3>
+                    
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6 mb-6">
+                        <h4 class="text-lg font-bold mb-4 text-gray-800">核心技能分析</h4>
+                        <p class="text-gray-700 mb-4">職位會變化，但核心技能可轉移。掌握以下關鍵技能：</p>
+                        <div id="skills-list" class="space-y-3">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="bg-white border-2 border-purple-200 rounded-lg p-6">
+                        <h4 class="text-lg font-bold mb-4 text-gray-800">AI 抗風險指數分類</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="risk-high text-white px-4 py-2 rounded-lg font-bold mr-4 min-w-[80px] text-center">
+                                    高
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-gray-800 mb-1">創意、情商、複雜決策</h5>
+                                    <p class="text-sm text-gray-600">醫療專業、心理諮商、高階決策者、藝術創作</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="risk-medium text-white px-4 py-2 rounded-lg font-bold mr-4 min-w-[80px] text-center">
+                                    中
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-gray-800 mb-1">人機協作</h5>
+                                    <p class="text-sm text-gray-600">軟體工程師、資料分析師、專業顧問</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="risk-low text-white px-4 py-2 rounded-lg font-bold mr-4 min-w-[80px] text-center">
+                                    低
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-gray-800 mb-1">重複性數據、文書工作</h5>
+                                    <p class="text-sm text-gray-600">基礎行政、資料輸入、簡單客服</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Careers -->
+                <div class="bg-white border-2 border-gray-200 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">🎯 相關職業路徑</h3>
+                    <div id="career-paths" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills/Learning Path Module -->
+        <div id="module-skills" class="module-container hidden">
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <button onclick="goBack('step-function-selection')" class="mb-4 text-purple-600 hover:text-purple-800">
+                    ← 返回功能選擇
+                </button>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">基本能力與學習路徑</h2>
+
+                <!-- Math A vs B Impact Analyzer -->
+                <div class="mb-8" id="math-impact-section">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">📐 數學 A vs B 影響分析</h3>
+                    <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white rounded-lg p-4 border-2 border-purple-300">
+                                <h4 class="text-lg font-bold text-purple-700 mb-3">數學 A 的優勢</h4>
+                                <ul class="space-y-2 text-sm text-gray-700">
+                                    <li>✓ 申請商學院、經濟系較有競爭力</li>
+                                    <li>✓ 未來轉換理工領域較容易</li>
+                                    <li>✓ 數據分析相關職位需求</li>
+                                    <li>✓ 金融、精算等領域必備</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border-2 border-indigo-300">
+                                <h4 class="text-lg font-bold text-indigo-700 mb-3">數學 B 的適用性</h4>
+                                <ul class="space-y-2 text-sm text-gray-700">
+                                    <li>✓ 人文、教育、法律系主要採計</li>
+                                    <li>✓ 著重統計概念，實用導向</li>
+                                    <li>✓ 減輕數學負擔，專注專業科目</li>
+                                    <li>✓ 社會科學研究基礎</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                            <p class="text-sm text-yellow-800">
+                                💡 <strong>建議：</strong>根據您選擇的 <span id="selected-math-display" class="font-bold"></span>，
+                                <span id="math-recommendation"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Path Map -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">🎓 學習路徑圖</h3>
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 rounded-lg p-6">
+                            <h4 class="text-lg font-bold text-blue-800 mb-4">📖 高中階段建議</h4>
+                            <div id="highschool-recommendations" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 rounded-lg p-6">
+                            <h4 class="text-lg font-bold text-green-800 mb-4">🏆 證照與課程推薦</h4>
+                            <div id="certification-recommendations" class="space-y-3">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="bg-purple-50 rounded-lg p-6">
+                            <h4 class="text-lg font-bold text-purple-800 mb-4">💻 線上學習資源</h4>
+                            <div id="online-resources" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Skills Development -->
+                <div class="bg-white border-2 border-gray-200 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">🛠️ 核心能力培養</h3>
+                    <div id="core-skills" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2024 升學與職涯趨勢導航系統 | Educational and Career Trend Navigation System</p>
+            <p class="text-sm mt-2 text-gray-200">本系統提供之資訊僅供參考，實際情況可能因個人條件與市場變化而異</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
