@@ -309,7 +309,7 @@ function updateSalaryChart() {
     for (let i = 0; i <= 20; i++) {
         years.push(currentYear + i);
         // Simulate growth with some variation
-        const growthRate = 1.03 + (Math.random() * 0.02 - 0.01); // 2-4% annual growth
+        const growthRate = 1.03 + (Math.random() * 0.02 - 0.01); // 2-4% annual growth (base 3% ± 1%)
         const salary = Math.round(baseSalary * Math.pow(growthRate, i));
         salaries.push(salary);
     }
@@ -500,5 +500,5 @@ function updateMathAnalysis() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('升學與職涯趨勢導航系統已載入');
+    // System initialized
 });
