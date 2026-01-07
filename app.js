@@ -1,3 +1,7 @@
+// 全局常量 / Global Constants
+const SALARY_PREDICTION_YEARS = 20;
+const CHART_DISPLAY_INTERVAL = 2; // Show every Nth year in fallback chart
+
 // 全局狀態管理
 const state = {
     currentCategory: null,
@@ -239,7 +243,7 @@ function generateSalaryData(region, education, company) {
     const baseSalary = baseData[region][education][company];
     const data = [];
     
-    for (let year = 0; year <= 20; year++) {
+    for (let year = 0; year <= SALARY_PREDICTION_YEARS; year++) {
         // 使用指數成長模型，但有上限
         const growthRate = company === 'startup' ? 0.08 : 0.06;
         const maxMultiplier = company === 'startup' ? 3.5 : 2.8;
@@ -266,7 +270,7 @@ function initSalaryChart() {
     const company = document.getElementById('company-filter').value;
 
     const data = generateSalaryData(region, education, company);
-    const labels = Array.from({ length: 21 }, (_, i) => `${i}年`);
+    const labels = Array.from({ length: SALARY_PREDICTION_YEARS + 1 }, (_, i) => `${i}年`);
 
     // Check if Chart.js is available
     if (typeof Chart === 'undefined') {
@@ -346,7 +350,7 @@ function createFallbackChart(canvas, labels, data) {
     
     container.innerHTML = `
         <div style="padding: 20px; color: #f8fafc;">
-            <h4 style="margin-bottom: 15px; color: #667eea;">薪資成長趨勢（20年預測）</h4>
+            <h4 style="margin-bottom: 15px; color: #667eea;">薪資成長趨勢（${SALARY_PREDICTION_YEARS}年預測）</h4>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
                 ${data.map((salary, i) => {
                     const height = (salary / Math.max(...data)) * 100;
@@ -357,10 +361,10 @@ function createFallbackChart(canvas, labels, data) {
                             <div style="font-size: 0.8rem; font-weight: bold;">${salary.toLocaleString()}</div>
                         </div>
                     `;
-                }).filter((_, i) => i % 2 === 0).join('')}
+                }).filter((_, i) => i % CHART_DISPLAY_INTERVAL === 0).join('')}
             </div>
             <div style="margin-top: 20px; text-align: center;">
-                <p style="color: #cbd5e1;">起薪: ${data[0].toLocaleString()}元 → 20年後: ${data[20].toLocaleString()}元</p>
+                <p style="color: #cbd5e1;">起薪: ${data[0].toLocaleString()}元 → ${SALARY_PREDICTION_YEARS}年後: ${data[SALARY_PREDICTION_YEARS].toLocaleString()}元</p>
             </div>
         </div>
     `;
