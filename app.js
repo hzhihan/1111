@@ -313,6 +313,12 @@ function goBackToPrevious() {
 function initializeSalaryChart() {
     const ctx = document.getElementById('salaryChart');
     
+    // Check if element exists
+    if (!ctx) {
+        console.warn('Salary chart canvas not found');
+        return;
+    }
+    
     if (salaryChart) {
         salaryChart.destroy();
     }
@@ -519,7 +525,9 @@ function updateSkillsData() {
     const path = learningPaths[category];
     
     // Update math impact section
-    if (state.selectedMath) {
+    const mathImpactSection = document.getElementById('math-impact-section');
+    if (state.selectedMath && mathImpactSection) {
+        mathImpactSection.classList.remove('hidden');
         document.getElementById('selected-math-display').textContent = `數學 ${state.selectedMath}`;
         
         let recommendation = '';
@@ -540,8 +548,8 @@ function updateSkillsData() {
         }
         
         document.getElementById('math-recommendation').textContent = recommendation;
-    } else {
-        document.getElementById('math-impact-section').style.display = 'none';
+    } else if (mathImpactSection) {
+        mathImpactSection.classList.add('hidden');
     }
     
     // Update high school recommendations
@@ -594,5 +602,5 @@ function updateCoreSkills(category) {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Educational and Career Trend Navigation System initialized');
+    // System initialized
 });
